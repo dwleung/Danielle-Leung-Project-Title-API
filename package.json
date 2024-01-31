@@ -1,18 +1,26 @@
 {
-  "name": "danielle-leung-project-title-api",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "dotenv": "^16.4.1",
-    "express": "^4.18.2",
-    "knex": "^3.1.0",
-    "mysql2": "^3.9.1"
-  }
+	"name": "danielle-leung-project-title-api",
+	"version": "1.0.0",
+	"description": "",
+	"main": "server.ts",
+	"type": "module",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"dev": "node routes/openai_routes"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"dependencies": {
+		"body-parser": "^1.20.2",
+		"dotenv": "^16.4.1",
+		"express": "^4.18.2",
+		"knex": "^3.1.0",
+		"mysql2": "^3.9.1",
+		"openai": "^4.26.0",
+		"typescript": "^5.3.3"
+	},
+	"devDependencies": {
+		"@types/node": "^20.11.13"
+	}
 }
