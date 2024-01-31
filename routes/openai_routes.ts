@@ -1,24 +1,32 @@
 import { OpenAI } from "openai";
-import * as readline from "node:readline/promises";
+import dotenv from "dotenv";
+import { Router } from "express";
+dotenv.config();
 
 const openai = new OpenAI({
 	apiKey: process.env.OPENAI_API_KEY,
 });
 
-const userInterface = readline.createInterface({
-	input: process.stdin,
-	output: process.stdout,
-});
-
-userInterface.prompt();
-
-userInterface.on("line", async (input) => {
-	const res = await openai.chat.completions.create({
+//custom prompt
+let promptAI = async (prompt: string) => {
+	const response = await openai.chat.completions.create({
 		model: "gpt-3.5-turbo",
-		temperature: 1,
-		max_tokens: 100,
-		messages: [{ role: "user", content: input }],
+		messages: [
+			{
+				role: "system",
+				content: "You will be provided with a set of interests and skills, and your task is to generate a software engineering project title, description, and 2-3 requirements using at least one interest and at least one skill.",
+			},
+			{
+				role: "user",
+				content: prompt,
+			},
+		],
+		temperature: 0.8,
+		max_tokens: 256,
 	});
-	console.log(res.choices[0].message.content);
-	userInterface.prompt();
-});
+	return response.choices[0].message;
+};
+
+promptAI(
+	"Interests: home cooking, ultimate frisbee, travelling \n    Skills: Typescript, Auth"
+).then((res) => console.log(res));
