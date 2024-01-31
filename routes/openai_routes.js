@@ -8,6 +8,7 @@ const openai = new OpenAI({
 });
 
 //custom prompt
+router.get("/custom");
 let promptAI = async (prompt: string) => {
 	const response = await openai.chat.completions.create({
 		model: "gpt-3.5-turbo",

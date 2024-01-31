@@ -5,14 +5,14 @@ import userRoutes from "./routes/user_routes";
 
 dotenv.config();
 
-const app: Express = express();
+const app = express();
 const PORT = process.env.PORT;
 
 app.use(express.json());
 app.use(cors());
 
 //Home
-app.get("/", (req: Request, res: Response) => {
+app.get("/", (req, res) => {
 	res.send("Welcome!");
 });
 
