@@ -2,6 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import openaiRoutes from "./routes/openai_routes.js";
 import userRoutes from "./routes/user_routes.js";
+import cors from "cors";
 
 dotenv.config();
 
@@ -9,6 +10,7 @@ const app = express();
 const PORT = process.env.PORT;
 
 app.use(express.json());
+app.use(cors());
 
 //Home
 app.get("/", (req, res) => {
