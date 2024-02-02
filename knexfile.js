@@ -1,13 +1,19 @@
-const dotenv = require("dotenv");
-require(dotenv).config();
+import dotenv from "dotenv";
+dotenv.config();
 
-module.exports = {
+/**
+ * @type { Object.<string, import("knex").Knex.Config> }
+ */
+
+const knex = {
 	client: "mysql2",
 	connection: {
 		host: process.env.DB_HOST,
-		database: process.env.DB_LOCAL_DBNAME,
-		user: process.env.DB_LOCAL_USER,
+		port: process.env.PORT,
+		user: process.env.DB_USER,
 		password: process.env.DB_LOCAL_PASSWORD,
-		charset: "utf8",
+		database: process.env.DB_LOCAL_DBNAME,
 	},
 };
+
+export default knex;
