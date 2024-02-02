@@ -1,12 +1,12 @@
 import dotenv from "dotenv";
-import knex from "knex";
-import "../knexfile.js";
-// const knex = require("knex")(require("../knexfile.cjs"));
+import knexLibrary from "knex";
+import knexfile from "../knexfile.js";
+import jwt from "jsonwebtoken";
 dotenv.config();
+const knex = knexLibrary(knexfile);
 
-// router.route("/").post(userController.add);
-
-const add = async (req, res) => {
+console.log("key", process.env.SECRET_KEY);
+const signup = async (req, res) => {
 	const { username, name, password } = req.body;
 
 	if (!username || !name || !password) {
@@ -15,13 +15,9 @@ const add = async (req, res) => {
 		});
 	}
 	try {
-		// console.log(1);
 		const result = await knex("users").insert(req.body);
-		// console.log(2);
 		const newUserId = result[0];
-		// console.log(3);
 		const createdUser = await knex("users").where({ id: newUserId });
-		// console.log(4);
 
 		res.status(201).json(createdUser);
 	} catch (error) {
@@ -31,15 +27,46 @@ const add = async (req, res) => {
 	}
 };
 
+const login = async (req, res) => {
+	const { username, password } = req.body;
+
+	try {
+		const foundUser = await knex("users").where({ username: username });
+		if (foundUser.length === 0) {
+			return res.status(404).json({
+				message: `User with username ${username} not found`,
+			});
+		}
+		const user = foundUser[0];
+
+		if (user && user.password === password) {
+			const token = jwt.sign(
+				{ username: foundUser.username },
+				process.env.SECRET_KEY,
+				{ expiresIn: "24h" }
+			);
+			res.status(200).json({ token: token });
+		} else if (user.password != password) {
+			console.log("the passwords do not match");
+			res.status(400).json({
+				message: `Your password does not match the password on file. Please try again.`,
+			});
+		}
+	} catch (error) {
+		res.status(500).json({
+			message: `Unable to retrieve user data for user with username ${username}: ${error}`,
+		});
+	}
+};
+
 // router
 // 	.route("/:id/ideas")
-// 	.get(userController.ideas)
-// 	.get(userController.prompts);
 
-// router
-// 	.route("/:id/")
-// 	.get(userController.findUser)
-// 	.patch(userController.update)
-// 	.delete(userController.remove);
+// 	.post(userController.saveIdea)
+const saveIdea = async (req, res) => {};
+// 	.post(userController.savePrompt)
+const savePrompt = async (req, res) => {};
+// 	.get(userController.getIdeas);
+const getIdeas = async (req, res) => {};
 
-export default { add };
+export default { signup, login, saveIdea, savePrompt, getIdeas };

@@ -15,6 +15,7 @@ router.post("/", async (req, res) => {
 		role: "system",
 		content: "Your task is to generate a software engineering project brief. The project should have 3 requirements that helps the user understand what to integrate in the project. Your response should be structured as a JSON object with keys: title, description, and requirements.",
 	});
+	console.log(messagesArray);
 
 	const response = await openai.chat.completions.create({
 		model: "gpt-3.5-turbo",

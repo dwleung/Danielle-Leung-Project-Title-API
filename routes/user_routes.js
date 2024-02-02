@@ -2,16 +2,14 @@ import express from "express";
 const router = express.Router();
 import userController from "../controllers/user-controller.js";
 
-router.route("/").post(userController.add);
+router.route("/signup").post(userController.signup);
 
-router.route("/:id/ideas");
-// 	.get(userController.ideas);
-// 	.get(userController.prompts);
+router.route("/login").post(userController.login);
 
-// router
-// 	.route("/:id/")
-// 	.get(userController.findUser)
-// 	.patch(userController.update)
-// 	.delete(userController.remove);
+router
+	.route("/:id/ideas")
+	.post(userController.saveIdea)
+	.post(userController.savePrompt)
+	.get(userController.getIdeas);
 
 export default router;

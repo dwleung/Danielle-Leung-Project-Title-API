@@ -5,15 +5,13 @@ dotenv.config();
  * @type { Object.<string, import("knex").Knex.Config> }
  */
 
-const knex = {
+export default {
 	client: "mysql2",
 	connection: {
 		host: process.env.DB_HOST,
-		port: process.env.PORT,
-		user: process.env.DB_USER,
+		user: process.env.DB_LOCAL_USER,
 		password: process.env.DB_LOCAL_PASSWORD,
 		database: process.env.DB_LOCAL_DBNAME,
+		charset: "utf8",
 	},
 };
-
-export default knex;
