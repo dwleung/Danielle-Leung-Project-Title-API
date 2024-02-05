@@ -8,12 +8,12 @@ router.route("/login").post(userController.login);
 router.route("/profile").get(authorize.authorize, userController.getProfile);
 
 router
-	.route("/:id/ideas")
+	.route("/ideas")
 	.post(authorize.authorize, userController.saveIdea)
 	.get(authorize.authorize, userController.getIdeas);
 
 router
-	.route("/:id/prompts")
+	.route("/prompts")
 	.post(authorize.authorize, userController.savePrompt)
 	.get(authorize.authorize, userController.getPrompts);
 

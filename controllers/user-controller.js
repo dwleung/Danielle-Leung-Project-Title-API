@@ -85,18 +85,17 @@ const login = async (req, res) => {
 // 	.post(userController.saveIdea)
 const saveIdea = async (req, res) => {
 	const { user_id, title, description, requirements } = req.body;
+	const stringify = JSON.stringify(requirements);
 
 	try {
 		const newIdeaId = await knex("ideas").insert({
 			user_id,
 			title,
 			description,
-			requirements,
+			requirements: stringify,
 		});
 
-		console.log(newIdeaId);
 		const newIdea = await knex("ideas").where({ id: newIdeaId[0] });
-
 		res.status(201).json(newIdea);
 	} catch (error) {
 		res.status(500).json({
@@ -107,16 +106,21 @@ const saveIdea = async (req, res) => {
 
 // 	.get(userController.getIdeas);
 const getIdeas = async (req, res) => {
-	const userId = req.params.id;
-	console.log("This is the params userID: ", userId);
+	console.log("Inside get Ideas function");
+	const { user_id } = req.body;
 	try {
 		const data = await knex("ideas")
 			.select("title", "description", "requirements")
-			.where("user_id", userId);
-		res.status(200).json(data[0]);
+			.where("user_id", user_id);
+		if (!data) {
+			console.log("No saved ideas for this user");
+			return;
+		}
+		console.log("GET ideas: this is the response: ", data);
+		res.status(200).json(data);
 	} catch (error) {
 		res.status(404).json({
-			message: `Error retrieving prompts: ${error}`,
+			message: `Error retrieving ideas: ${error}`,
 		});
 	}
 };
@@ -144,12 +148,13 @@ const savePrompt = async (req, res) => {
 };
 
 const getPrompts = async (req, res) => {
-	const userId = req.params.id;
-	console.log("This is the params userID: ", userId);
 	try {
 		const data = await knex("prompts")
 			.select("interests", "skills", "toggles")
-			.where("user_id", userId);
+			.where("user_id", req.body.user_id);
+
+		console.log("prompt response data is", typeof data[0]);
+		console.log("prompt response: ", data[0]);
 		res.status(200).json(data[0]);
 	} catch (error) {
 		res.status(404).json({

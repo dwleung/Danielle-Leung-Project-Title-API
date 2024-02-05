@@ -9,7 +9,7 @@ const SECRET_KEY = process.env.SECRET_KEY;
 const authorize = async (req, res, next) => {
 	if (!req.headers.authorization) {
 		return res
-			.status(201)
+			.status(401)
 			.send("Authorization token not included. Please log in.");
 	}
 	const token = req.headers.authorization.split(" ")[1];
@@ -19,7 +19,7 @@ const authorize = async (req, res, next) => {
 		console.log("decoded:", decoded);
 		console.log("req.user: ", req.user);
 	} catch (error) {
-		res.status(400).json({
+		return res.status(401).json({
 			message: `Invalid authorization token: ${error}`,
 		});
 	}
@@ -27,11 +27,11 @@ const authorize = async (req, res, next) => {
 	try {
 		const user = await knex("users").where({ id: req.user.id }).first();
 		console.log("User found in database:", user);
-		req.userId = user.id;
-		console.log(req);
+		req.body.user_id = user.id;
+		console.log(req.body);
 		next();
 	} catch (error) {
-		return res.status(400).json({ message: `User not found: ${error}` });
+		return res.status(404).json({ message: `User not found: ${error}` });
 	}
 };
 
