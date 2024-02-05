@@ -6,24 +6,6 @@ dotenv.config();
 const knex = knexLibrary(knexfile);
 const SECRET_KEY = process.env.SECRET_KEY;
 
-function authorize(req, res, next) {
-	if (!req.headers.authorization) {
-		return res
-			.status(201)
-			.send("Authorization token not included. Please log in.");
-	}
-	const token = req.headers.authorization.split(" ")[1];
-	try {
-		const decoded = jwt.verify(token, SECRET_KEY);
-		req.user = decoded;
-		next();
-	} catch (error) {
-		res.status(400).json({
-			message: `Invalid authorization token: ${error}`,
-		});
-	}
-}
-
 // A Profile end-point that will return user information,
 // in this example, the user's name that they provided
 // when they signed up.
@@ -179,7 +161,6 @@ const getPrompts = async (req, res) => {
 export default {
 	signup,
 	login,
-	authorize,
 	getProfile,
 	saveIdea,
 	getIdeas,
