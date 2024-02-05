@@ -13,11 +13,9 @@ const SECRET_KEY = process.env.SECRET_KEY;
 // a token, verify that the token is valid, decode
 // the token and put the decoded data onto req.decoded
 const getProfile = async (req, res) => {
-	console.log("req.user", req.user);
 	const authUser = req.user;
 	try {
 		const user = await knex("users").where({ id: authUser.id }).first();
-		console.log("User found in database:", user);
 		const { id, name, username } = user;
 		res.status(200).json({ id, name, username });
 	} catch (error) {
@@ -106,7 +104,6 @@ const saveIdea = async (req, res) => {
 
 // 	.get(userController.getIdeas);
 const getIdeas = async (req, res) => {
-	console.log("Inside get Ideas function");
 	const { user_id } = req.body;
 	try {
 		const data = await knex("ideas")
@@ -116,7 +113,6 @@ const getIdeas = async (req, res) => {
 			console.log("No saved ideas for this user");
 			return;
 		}
-		console.log("GET ideas: this is the response: ", data);
 		res.status(200).json(data);
 	} catch (error) {
 		res.status(404).json({
@@ -148,14 +144,15 @@ const savePrompt = async (req, res) => {
 };
 
 const getPrompts = async (req, res) => {
+	console.log("inside getprompts");
 	try {
 		const data = await knex("prompts")
 			.select("interests", "skills", "toggles")
 			.where("user_id", req.body.user_id);
 
-		console.log("prompt response data is", typeof data[0]);
-		console.log("prompt response: ", data[0]);
-		res.status(200).json(data[0]);
+		console.log("prompt response data is", typeof data);
+		console.log("prompt response: ", data);
+		// res.status(200).json(data[0]);
 	} catch (error) {
 		res.status(404).json({
 			message: `Error retrieving prompts: ${error}`,

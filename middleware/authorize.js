@@ -16,8 +16,6 @@ const authorize = async (req, res, next) => {
 	try {
 		const decoded = jwt.verify(token, SECRET_KEY);
 		req.user = decoded;
-		console.log("decoded:", decoded);
-		console.log("req.user: ", req.user);
 	} catch (error) {
 		return res.status(401).json({
 			message: `Invalid authorization token: ${error}`,
@@ -26,9 +24,7 @@ const authorize = async (req, res, next) => {
 
 	try {
 		const user = await knex("users").where({ id: req.user.id }).first();
-		console.log("User found in database:", user);
 		req.body.user_id = user.id;
-		console.log(req.body);
 		next();
 	} catch (error) {
 		return res.status(404).json({ message: `User not found: ${error}` });
