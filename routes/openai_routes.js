@@ -9,6 +9,7 @@ const openai = new OpenAI({
 });
 
 // POST request to OpenAI API for project idea
+// Returns a JSON object with the keys: title, description, requirements (array of strings)
 router.post("/", async (req, res) => {
 	try {
 		const messagesArray = req.body;

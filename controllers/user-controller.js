@@ -6,12 +6,7 @@ dotenv.config();
 const knex = knexLibrary(knexfile);
 const SECRET_KEY = process.env.SECRET_KEY;
 
-// A Profile end-point that will return user information,
-// in this example, the user's name that they provided
-// when they signed up.
-// The authorize middleware function must check for
-// a token, verify that the token is valid, decode
-// the token and put the decoded data onto req.decoded
+//Retrieve user profie
 const getProfile = async (req, res) => {
 	const authUser = req.user;
 	try {
@@ -23,6 +18,7 @@ const getProfile = async (req, res) => {
 	}
 };
 
+//Create new user
 const signup = async (req, res) => {
 	const { username, name, password } = req.body;
 
@@ -44,6 +40,8 @@ const signup = async (req, res) => {
 	}
 };
 
+// Finds user in database, checks for correct password
+// Returns userID & JWT token
 const login = async (req, res) => {
 	const { username, password } = req.body;
 
@@ -55,7 +53,6 @@ const login = async (req, res) => {
 			});
 		}
 		const user = foundUser[0];
-		console.log("This is my foundUser", user);
 
 		if (user && user.password === password) {
 			const token = jwt.sign(
@@ -77,10 +74,8 @@ const login = async (req, res) => {
 	}
 };
 
-// router
-// 	.route("/:id/ideas")
-
-// 	.post(userController.saveIdea)
+// POST idea: add new idea to table "ideas". Stringify requirements array to put in table
+// Returns posted idea
 const saveIdea = async (req, res) => {
 	const { user_id, title, description, requirements } = req.body;
 	const stringify = JSON.stringify(requirements);
@@ -102,7 +97,8 @@ const saveIdea = async (req, res) => {
 	}
 };
 
-// 	.get(userController.getIdeas);
+//GET idea retrieves ideas for specific user
+//Returns an array of objects
 const getIdeas = async (req, res) => {
 	const { user_id } = req.body;
 	try {
@@ -120,7 +116,8 @@ const getIdeas = async (req, res) => {
 		});
 	}
 };
-// 	.post(userController.savePrompt)
+//POST prompt: add user's interests & skills to "prompts" table
+// Returns prompt object
 const savePrompt = async (req, res) => {
 	const { user_id, interests, skills, toggles } = req.body;
 
@@ -131,10 +128,7 @@ const savePrompt = async (req, res) => {
 			skills,
 			toggles,
 		});
-
-		console.log(newPromptId);
 		const newPrompt = await knex("prompts").where({ id: newPromptId[0] });
-
 		res.status(201).json(newPrompt);
 	} catch (error) {
 		res.status(500).json({
@@ -143,8 +137,9 @@ const savePrompt = async (req, res) => {
 	}
 };
 
+// GET prompts: retrieves prompts that the user has saved
+// Returns an array of objects
 const getPrompts = async (req, res) => {
-	console.log("inside getprompts");
 	try {
 		const data = await knex("prompts")
 			.select("interests", "skills", "toggles")

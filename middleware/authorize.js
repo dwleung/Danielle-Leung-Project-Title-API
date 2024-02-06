@@ -6,6 +6,7 @@ dotenv.config();
 const knex = knexLibrary(knexfile);
 const SECRET_KEY = process.env.SECRET_KEY;
 
+// AUTHORIZE MIDDLEWARE: check for token, verify token, find user ID and add it to request body
 const authorize = async (req, res, next) => {
 	if (!req.headers.authorization) {
 		return res
