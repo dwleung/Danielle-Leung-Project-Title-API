@@ -149,10 +149,7 @@ const getPrompts = async (req, res) => {
 		const data = await knex("prompts")
 			.select("interests", "skills", "toggles")
 			.where("user_id", req.body.user_id);
-
-		console.log("prompt response data is", typeof data);
-		console.log("prompt response: ", data);
-		// res.status(200).json(data[0]);
+		res.status(200).json(data);
 	} catch (error) {
 		res.status(404).json({
 			message: `Error retrieving prompts: ${error}`,
