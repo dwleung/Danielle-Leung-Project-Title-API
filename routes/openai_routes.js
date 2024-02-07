@@ -17,9 +17,9 @@ router.post("/", async (req, res) => {
 		// Math.random() adds noise to the prompts resulting in better variety
 		messagesArray.unshift({
 			role: "system",
-			content: `Your task is to generate a software engineering project idea for a developer of beginner skill level. The project should have 3 requirements that helps the user understand what to integrate in the project. The project should have a paragraph description indicating the project's impact, intended audience, and any other features.  Your response should be structured as a JSON object with keys: title, description, and requirements(which is an array of 3 sentences).${Math.random()}`,
+			content: `Your task is to generate a software engineering project idea for a developer looking to upskill or get inspiration for their side project. The project should have 3 requirements that helps the user understand what to integrate in the project. The project should have a paragraph description indicating the project's impact, intended audience, and any other features.  Your response should be structured as a JSON object with keys: title, description, and requirements(which is an array of 3 sentences).`,
 		});
-
+		console.log("after unshift:", messagesArray);
 		const response = await openai.chat.completions.create({
 			model: "gpt-3.5-turbo-0125",
 			messages: messagesArray,
@@ -28,6 +28,7 @@ router.post("/", async (req, res) => {
 			frequency_penalty: 1.8,
 			response_format: { type: "json_object" },
 		});
+		console.log(response.choices[0]);
 		res.status(200).send(response.choices[0].message);
 	} catch (error) {
 		res.status(500).json({

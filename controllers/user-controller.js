@@ -78,22 +78,29 @@ const login = async (req, res) => {
 // Returns posted idea
 const saveIdea = async (req, res) => {
 	const { user_id, title, description, requirements } = req.body;
-	const stringify = JSON.stringify(requirements);
-
-	try {
-		const newIdeaId = await knex("ideas").insert({
-			user_id,
-			title,
-			description,
-			requirements: stringify,
-		});
-
-		const newIdea = await knex("ideas").where({ id: newIdeaId[0] });
-		res.status(201).json(newIdea);
-	} catch (error) {
-		res.status(500).json({
-			message: `Unable to save idea: ${error}`,
-		});
+	const foundIdea = await knex("ideas").where({
+		title: title,
+		user_id: user_id,
+	});
+	if (foundIdea.length === 0) {
+		const stringify = JSON.stringify(requirements);
+		try {
+			const newIdeaId = await knex("ideas").insert({
+				user_id,
+				title,
+				description,
+				requirements: stringify,
+			});
+			console.log(newIdeaId);
+			const newIdea = await knex("ideas").where({ id: newIdeaId[0] });
+			res.status(201).json(newIdea);
+		} catch (error) {
+			res.status(500).json({
+				message: `Unable to save idea: ${error}`,
+			});
+		}
+	} else {
+		return;
 	}
 };
 
