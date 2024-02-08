@@ -5,8 +5,9 @@ import jwt from "jsonwebtoken";
 dotenv.config();
 const knex = knexLibrary(knexfile);
 const SECRET_KEY = process.env.SECRET_KEY;
+console.log(SECRET_KEY);
 
-//Retrieve user profie
+//Retrieve user profie and return an object with user id, name, and username
 const getProfile = async (req, res) => {
 	const authUser = req.user;
 	try {
@@ -18,7 +19,7 @@ const getProfile = async (req, res) => {
 	}
 };
 
-//Create new user
+//Create new user and return an object with user id, name, and JWT token
 const signup = async (req, res) => {
 	const { username, name, password } = req.body;
 
@@ -30,9 +31,21 @@ const signup = async (req, res) => {
 	try {
 		const result = await knex("users").insert(req.body);
 		const newUserId = result[0];
-		const createdUser = await knex("users").where({ id: newUserId });
-
-		res.status(201).json(createdUser);
+		const createdUser = await knex("users")
+			.where({ id: newUserId })
+			.first();
+		const token = jwt.sign(
+			{ id: createdUser.id, name: createdUser.name },
+			SECRET_KEY,
+			{
+				expiresIn: "24h",
+			}
+		);
+		res.status(200).json({
+			id: createdUser.id,
+			name: createdUser.name,
+			token: token,
+		});
 	} catch (error) {
 		res.status(500).json({
 			message: `Unable to create new user: ${error}`,
@@ -40,19 +53,21 @@ const signup = async (req, res) => {
 	}
 };
 
-// Finds user in database, checks for correct password
-// Returns userID & JWT token
+// Find user in database, checks for correct password
+// Return and object with userID & JWT token
 const login = async (req, res) => {
 	const { username, password } = req.body;
 
 	try {
-		const foundUser = await knex("users").where({ username: username });
+		const foundUser = await knex("users")
+			.where({ username: username })
+			.first();
 		if (foundUser.length === 0) {
 			return res.status(404).json({
 				message: `User "${username}" not found. Please sign up!`,
 			});
 		}
-		const user = foundUser[0];
+		const user = foundUser;
 
 		if (user && user.password === password) {
 			const token = jwt.sign(
@@ -75,7 +90,7 @@ const login = async (req, res) => {
 };
 
 // POST idea: add new idea to table "ideas". Stringify requirements array to put in table
-// Returns posted idea
+// Returns posted idea object
 const saveIdea = async (req, res) => {
 	const { user_id, title, description, requirements } = req.body;
 	const foundIdea = await knex("ideas").where({
