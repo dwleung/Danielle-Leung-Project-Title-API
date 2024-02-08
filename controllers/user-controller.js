@@ -5,7 +5,6 @@ import jwt from "jsonwebtoken";
 dotenv.config();
 const knex = knexLibrary(knexfile);
 const SECRET_KEY = process.env.SECRET_KEY;
-console.log(SECRET_KEY);
 
 //Retrieve user profie and return an object with user id, name, and username
 const getProfile = async (req, res) => {
@@ -106,7 +105,6 @@ const saveIdea = async (req, res) => {
 				description,
 				requirements: stringify,
 			});
-			console.log(newIdeaId);
 			const newIdea = await knex("ideas").where({ id: newIdeaId[0] });
 			res.status(201).json(newIdea);
 		} catch (error) {
