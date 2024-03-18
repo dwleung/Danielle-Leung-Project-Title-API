@@ -54,8 +54,6 @@ _IDEAS TABLE_ stores project title, description, requirements. Columns for seed 
 
 _PROMPTS TABLE_ stores user inputs of interests and skills used to generate custom ideas, a future feature.
 
-![Three sample tables showing users, ideas, and prompts](./src/assets/database-tables.png)
-
 ### Endpoints
 
 **POST /openai**
@@ -114,6 +112,10 @@ Login a user
      }
      ```
 
+**GET /user/profile**
+Retrieve user's profile, including saved ideas and prompts
+
+
 **POST /user/ideas**
 
 Add idea to database
@@ -129,6 +131,19 @@ Add idea to database
           "idea": "Some idea that is just magnificent"
      }
      ```
+
+**GET /user/ideas**
+Retrieves ideas associated with authorized user
+
+**POST /user/prompts**
+Add prompt to database 
+
+     Parameters:
+     token: JWT of logged in user
+     prompts: Prompts that user wants to save
+
+**GET /user/prompts** 
+Retrieves prompts associated with authorized user 
 
 ### Auth
 

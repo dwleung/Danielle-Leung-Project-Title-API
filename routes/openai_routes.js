@@ -14,7 +14,6 @@ router.post("/", async (req, res) => {
 	try {
 		const messagesArray = req.body;
 		// Add the system role to the chat history that is provided to OpenAI API
-		// Math.random() adds noise to the prompts resulting in better variety
 		messagesArray.unshift({
 			role: "system",
 			content: `Your task is to generate a software engineering project idea for a developer looking to upskill or get inspiration for their side project. The project should have 3 requirements that helps the user understand what to integrate in the project. The project should have a paragraph description indicating the project's impact, intended audience, and any other features.  Your response should be structured as a JSON object with keys: title, description, and requirements(which is an array of 3 sentences).`,

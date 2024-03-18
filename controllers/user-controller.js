@@ -61,7 +61,9 @@ const login = async (req, res) => {
 		const foundUser = await knex("users")
 			.where({ username: username })
 			.first();
-		if (foundUser.length === 0) {
+
+		console.log("foundUser:", foundUser);
+		if (foundUser === undefined) {
 			return res.status(404).json({
 				message: `User "${username}" not found. Please sign up!`,
 			});
@@ -91,18 +93,19 @@ const login = async (req, res) => {
 // POST idea: add new idea to table "ideas". Stringify requirements array to put in table
 // Returns posted idea object
 const saveIdea = async (req, res) => {
-	console.log("inside saving idea")
-	const { user_id, title, description, requirements } = req.body;
-	console.log("Req Body:", req.body);
+	const { user_id, idea_id, title, description, requirements } = req.body;
+	console.log("Req.body inside saveIdea", req.body)
+	if (idea_id === undefined){return};
 	const foundIdea = await knex("ideas").where({
-		title: title,
-		user_id: user_id,
+		idea_id: idea_id,
 	});
+	console.log("foundIdea", foundIdea)
 	if (foundIdea.length === 0) {
 		const stringify = JSON.stringify(requirements);
 		try {
 			const newIdeaId = await knex("ideas").insert({
 				user_id,
+				idea_id: idea_id,
 				title,
 				description,
 				requirements: stringify,
@@ -127,7 +130,7 @@ const getIdeas = async (req, res) => {
 	const { user_id } = req.body;
 	try {
 		const data = await knex("ideas")
-			.select("title", "description", "requirements")
+			.select("idea_id", "title", "description", "requirements")
 			.where("user_id", user_id);
 		if (!data) {
 			console.log("No saved ideas for this user");
